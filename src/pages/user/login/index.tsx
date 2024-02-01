@@ -111,8 +111,8 @@ const Login: React.FC = () => {
   const intl = useIntl();
   
 
-  const fetchUserInfo = async (username: string) => {
-    const userInfo = await initialState?.fetchUserInfo?.(username);
+  const fetchUserInfo = async () => {
+    const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       flushSync(() => {
         setInitialState((s) => ({
@@ -127,7 +127,8 @@ const Login: React.FC = () => {
     try {
       // 登录
       const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
+      if (msg.access_token) {
+        localStorage.setItem("accessToken", msg.access_token);
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
@@ -138,7 +139,6 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
@@ -227,14 +227,14 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="email"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.username.placeholder',
-                  defaultMessage: '用户名: admin or user',
+                  defaultMessage: '邮箱：yixzzzzhhl@gmail.com',
                 })}
                 rules={[
                   {
@@ -242,7 +242,7 @@ const Login: React.FC = () => {
                     message: (
                       <FormattedMessage
                         id="pages.login.username.required"
-                        defaultMessage="请输入用户名!"
+                        defaultMessage="请输入邮箱!"
                       />
                     ),
                   },
@@ -256,7 +256,7 @@ const Login: React.FC = () => {
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.password.placeholder',
-                  defaultMessage: '密码: ant.design',
+                  defaultMessage: '密码: rourou',
                 })}
                 rules={[
                   {
@@ -391,3 +391,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
