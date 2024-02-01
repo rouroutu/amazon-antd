@@ -1,13 +1,21 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
+// import { extend } from 'umi-request';
+
+// const request = extend({
+  // prefix: 'http://127.0.0.1:5000',
+// });
+
+const authHeader = { Authorization: 'Bearer ' + localStorage.getItem('accessToken') };
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
     data: API.CurrentUser;
-  }>('/api/currentUser', {
-    method: 'GET',
+  }>('http://127.0.0.1:8000/users/me', {
+    method: 'POST',
+    headers: authHeader,
     ...(options || {}),
   });
 }
@@ -22,7 +30,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('http://127.0.0.1:8000/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,10 +72,10 @@ export async function rule(
 export async function updateRule(options?: { [key: string]: any }) {
   return request<API.RuleListItem>('/api/rule', {
     method: 'POST',
-    data: {
+    data:{
       method: 'update',
       ...(options || {}),
-    },
+    }
   });
 }
 
@@ -75,10 +83,10 @@ export async function updateRule(options?: { [key: string]: any }) {
 export async function addRule(options?: { [key: string]: any }) {
   return request<API.RuleListItem>('/api/rule', {
     method: 'POST',
-    data: {
+    data:{
       method: 'post',
       ...(options || {}),
-    },
+    }
   });
 }
 
@@ -86,9 +94,10 @@ export async function addRule(options?: { [key: string]: any }) {
 export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/rule', {
     method: 'POST',
-    data: {
+    data:{
       method: 'delete',
       ...(options || {}),
-    },
+    }
   });
 }
+
